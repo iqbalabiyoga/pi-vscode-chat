@@ -1,9 +1,14 @@
 {
   "name": "pi-vscode-chat",
   "displayName": "Pi Chat",
-  "description": "Chat sidebar powered by pi coding agent — Copilot-like, with multi-agent & OpenCode",
-  "version": "0.1.0",
-  "publisher": "you",
+  "description": "Chat sidebar powered by your local pi coding agent — Copilot-like, with all pi extensions, skills, multi-agent & OpenCode",
+  "version": "0.2.0",
+  "publisher": "iqbalabiyoga",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/iqbalabiyoga/pi-vscode-chat"
+  },
   "private": true,
   "engines": {
     "vscode": "^1.98.0"
@@ -97,8 +102,8 @@
   },
   "scripts": {
     "vscode:prepublish": "bun run compile",
-    "compile": "bun run build:vendor && bun run build && tsc -p ./",
-    "watch": "tsc -watch -p ./",
+    "compile": "bun run build:vendor && bun run build && tsc -p ./ --noEmit",
+    "watch": "tsc -watch -p ./ --noEmit",
     "build": "bun build ./src/extension.ts --outdir ./out --target node --external vscode",
     "build:vendor": "bun build ./media/vendor-entry.js --outfile ./media/vendor.js --format iife --minify"
   },

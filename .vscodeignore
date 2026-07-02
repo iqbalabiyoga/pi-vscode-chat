@@ -1,6 +1,12 @@
 .vscode/**
 .gitignore
+.git/**
 node_modules/**
 src/**
-tsconfig.json
 docs/**
+tsconfig.json
+bun.lock
+CLAUDE.md
+media/vendor-entry.js
+out/**/*.map
+**/*.vsix
