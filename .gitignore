@@ -3,3 +3,4 @@ out/
 *.vsix
 .DS_Store
 media/vendor.js
+CLAUDE.md
