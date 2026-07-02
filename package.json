@@ -1,0 +1,114 @@
+{
+  "name": "pi-vscode-chat",
+  "displayName": "Pi Chat",
+  "description": "Chat sidebar powered by pi coding agent — Copilot-like, with multi-agent & OpenCode",
+  "version": "0.1.0",
+  "publisher": "you",
+  "private": true,
+  "engines": {
+    "vscode": "^1.98.0"
+  },
+  "categories": ["Chat", "Other"],
+  "activationEvents": [],
+  "main": "./out/extension.js",
+  "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "pi-chat",
+          "title": "Pi Chat",
+          "icon": "$(comment-discussion)"
+        }
+      ]
+    },
+    "views": {
+      "pi-chat": [
+        {
+          "type": "webview",
+          "id": "piChat.sidebar",
+          "name": "Chat"
+        }
+      ]
+    },
+    "viewsWelcome": [
+      {
+        "view": "piChat.sidebar",
+        "contents": "Pi Chat ready.\n[Start session](command:piChat.newSession)\n[Select model](command:piChat.selectModel)"
+      }
+    ],
+    "commands": [
+      {
+        "command": "piChat.newSession",
+        "title": "Pi: New Session"
+      },
+      {
+        "command": "piChat.selectModel",
+        "title": "Pi: Select Model"
+      },
+      {
+        "command": "piChat.acceptEdit",
+        "title": "Pi: Accept Edit"
+      },
+      {
+        "command": "piChat.rejectEdit",
+        "title": "Pi: Reject Edit"
+      },
+      {
+        "command": "piChat.abort",
+        "title": "Pi: Abort Current Task"
+      },
+      {
+        "command": "piChat.sendSelection",
+        "title": "Pi Chat: Ask About Selection"
+      }
+    ],
+    "menus": {
+      "editor/context": [
+        {
+          "command": "piChat.sendSelection",
+          "title": "Pi Chat: Ask About Selection",
+          "group": "pi"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "Pi Chat",
+      "properties": {
+        "piChat.piPath": {
+          "type": "string",
+          "default": "pi",
+          "description": "Path to pi binary"
+        },
+        "piChat.adapterArgs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [],
+          "description": "Extra CLI args passed to pi --mode rpc e.g. ['--provider', 'opencode', '--model', 'opencode-zen']"
+        },
+        "piChat.autoSnapshot": {
+          "type": "boolean",
+          "default": true,
+          "description": "Snapshot files before edit tool runs, enabling accept/revert"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "bun run compile",
+    "compile": "bun run build:vendor && bun run build && tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "build": "bun build ./src/extension.ts --outdir ./out --target node --external vscode",
+    "build:vendor": "bun build ./media/vendor-entry.js --outfile ./media/vendor.js --format iife --minify"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.98.0",
+    "@types/node": "^22.0.0",
+    "typescript": "^5.7.0"
+  },
+  "dependencies": {
+    "highlight.js": "^11.11.1",
+    "marked": "^18.0.5"
+  }
+}
