@@ -5,6 +5,11 @@
   "version": "0.2.0",
   "publisher": "iqbalabiyoga",
   "license": "MIT",
+  "icon": "icon.png",
+  "galleryBanner": {
+    "color": "#4f46e5",
+    "theme": "dark"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/iqbalabiyoga/pi-vscode-chat"
@@ -38,10 +43,18 @@
     "viewsWelcome": [
       {
         "view": "piChat.sidebar",
-        "contents": "Pi Chat ready.\n[Start session](command:piChat.newSession)\n[Select model](command:piChat.selectModel)"
+        "contents": "# Pi Chat\nChat sidebar for your local pi coding agent.\n\n[Start session](command:piChat.newSession)\n[Select model](command:piChat.selectModel)\n[Check dependencies](command:piChat.checkDependencies)"
       }
     ],
     "commands": [
+      {
+        "command": "piChat.checkDependencies",
+        "title": "Pi: Check Dependencies"
+      },
+      {
+        "command": "piChat.installDependencies",
+        "title": "Pi: Install Dependencies"
+      },
       {
         "command": "piChat.newSession",
         "title": "Pi: New Session"
@@ -96,6 +109,14 @@
           "type": "boolean",
           "default": true,
           "description": "Snapshot files before edit tool runs, enabling accept/revert"
+        },
+        "piChat.extraEnv": {
+          "type": "object",
+          "default": {},
+          "additionalProperties": {
+            "type": "string"
+          },
+          "description": "Extra environment variables passed to pi process (e.g. {\"OPENAI_API_KEY\": \"sk-...\"}). By default only PATH, HOME, USER, TERM are passed for security."
         }
       }
     }
