@@ -1,0 +1,56 @@
+# VS Code Extension Publish (manual trigger)
+# Prerequisites:
+#   1. Create publisher: https://marketplace.visualstudio.com/manage
+#   2. Set AZURE_PAT secret in GitHub repo settings (PAT with Marketplace scope)
+#
+# For automated publishing with workload identity federation (recommended),
+# see: https://code.visualstudio.com/api/working-with-extensions/publishing-extension
+
+name: Publish Extension
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version bump (patch/minor/major)'
+        required: true
+        default: 'patch'
+        type: choice
+        options:
+          - patch
+          - minor
+          - major
+      pre-release:
+        description: 'Pre-release?'
+        required: false
+        default: false
+        type: boolean
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: bun install
+
+      - name: Build extension
+        run: bun run compile
+
+      - name: Publish to Marketplace
+        run: |
+          npm install -g @vscode/vsce
+          if [ "${{ github.event.inputs.pre-release }}" = "true" ]; then
+            vsce publish ${{ github.event.inputs.version }} --pre-release --no-dependencies
+          else
+            vsce publish ${{ github.event.inputs.version }} --no-dependencies
+          fi
+        env:
+          VSCE_PAT: ${{ secrets.AZURE_PAT }}
