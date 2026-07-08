@@ -19,11 +19,19 @@ export class PiRpcClient extends EventEmitter {
 
   get isRunning() { return this._isRunning; }
 
-  constructor(
-    private readonly piPath: string,
-    private readonly extraArgs: string[],
-  ) {
+  private extraEnv: Record<string, string | undefined> = {};
+  private piPath: string;
+  private extraArgs: string[];
+
+  constructor(piPath: string, extraArgs: string[]) {
     super();
+    this.piPath = piPath;
+    this.extraArgs = extraArgs;
+  }
+
+  /** Set extra environment variables for the child process */
+  setExtraEnv(env: Record<string, string | undefined>): void {
+    this.extraEnv = env;
   }
 
   /** Spawn pi --mode rpc. Sessions persist by default so they can be resumed. */
@@ -39,7 +47,17 @@ export class PiRpcClient extends EventEmitter {
     this.proc = spawn(this.piPath, args, {
       stdio: ['pipe', 'pipe', 'pipe'],
       cwd: vscode.workspace.workspaceFolders?.[0]?.uri.fsPath,
-      env: { ...process.env },
+      // Security: only pass minimal safe env vars — not the full process.env
+      // which may contain API keys, tokens, or other secrets in VS Code's env.
+      env: {
+        PATH: process.env.PATH,
+        HOME: process.env.HOME,
+        USER: process.env.USER,
+        TERM: process.env.TERM,
+        XDG_CONFIG_HOME: process.env.XDG_CONFIG_HOME,
+        // Allow users to opt in additional vars via piChat.extraEnv setting
+        ...(this.extraEnv || {}),
+      },
     });
 
     this._isRunning = true;
